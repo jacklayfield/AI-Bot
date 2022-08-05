@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-
 	"github.com/joho/godotenv"
 	"github.com/krognol/go-wolfram"
 	"github.com/shomali11/slacker"
@@ -16,6 +15,7 @@ import (
 
 )
 
+/* Function that prints information related to a given command */
 func printCmdEvents(analyticsChannel <-chan *slacker.CommandEvent) {
 	for event := range analyticsChannel {
 		fmt.Println("Cmd Events")
@@ -27,6 +27,7 @@ func printCmdEvents(analyticsChannel <-chan *slacker.CommandEvent) {
 	}
 }
 
+/* Main method to kick off bot, and handle queries */
 func main() {
     godotenv.Load(".env")
     fmt.Println("Test, nothing yet")
@@ -40,7 +41,7 @@ func main() {
 
     go printCmdEvents(bot.CommandEvents())
 
-	bot.Command("query for bot - <message>", &slacker.CommandDefinition {
+	bot.Command("question - <message>", &slacker.CommandDefinition {
 		Description: "send query to Wolfram",
 		Example: "who is the CEO of Alphabet",
 		Handler: func(botCtx slacker.BotContext, request slacker.Request, response slacker.ResponseWriter) {
@@ -61,12 +62,10 @@ func main() {
 			//get the result from wolfram
 			res, err := wolframClient.GetSpokentAnswerQuery(answer, wolfram.Metric, 1000)
 			if err != nil {
-				fmt.Println("there is an error")
+				fmt.Println("an error occured receiving response from Wolfram Client")
 			}
 			fmt.Println(value)
 			response.Reply(res)
-
-			response.Reply("Success")
 		}, 
 	})
 
